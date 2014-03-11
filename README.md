@@ -62,7 +62,7 @@ See `test.js` and `example.js` for more information.
 To specify SSH options like `UserKnownHostsFile`:
 
 ```js
-remotely('user@host', 'pwd', { options: { UserKnownHostsFile: '/dev/null' } }).pipe(process.stdout)
+remotely('user@host', 'pwd', { options: { UserKnownHostsFile: '/dev/null' } }).stdout.pipe(process.stdout)
 ```
 
 ### SSH Identity
@@ -70,7 +70,7 @@ remotely('user@host', 'pwd', { options: { UserKnownHostsFile: '/dev/null' } }).p
 You can specify a custom identity file:
 
 ```js
-remotely('user@host', 'pwd', { identity: '/home/azer/ssh-foo/.id_rsa' }).pipe(process.stdout)
+remotely('user@host', 'pwd', { identity: '/home/azer/ssh-foo/.id_rsa' }).stdout.pipe(process.stdout)
 ```
 
 ## Debugging
