@@ -18,6 +18,8 @@
     "format-text": "0.0.3"
   },
   "devDependencies": {
-    "prova": "*"
+    "tape": "*",
+    "concat-stream": "*",
+    "resumer": "*"
   }
 }

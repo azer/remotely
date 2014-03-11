@@ -1,8 +1,7 @@
-var remotely = require('./');
+// Usage: echo "pwd" | node example.js azer.io
 
-// pipe
-remotely(process.argv[2], 'echo $HOME').stdout.pipe(process.stdout);
+var remotely = require('./')(process.argv[2], { timeout: 5000 });
 
-// callback
-remotely(process.argv[2], 'echo $HOME', { timeout: 100 }, function (error) {
-});
+remotely.stdout.pipe(process.stdout);
+process.stdin.resume();
+process.stdin.pipe(remotely.stdin);
