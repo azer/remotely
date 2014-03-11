@@ -1,4 +1,7 @@
-var debug = require("debug")('remotely');
+var debug = require("debug");
+var remote = debug('remotely:remote');
+var local = debug('remotely:local');
+
 var format = require("format-text");
 var exec = require("child_process").exec;
 
@@ -32,7 +35,8 @@ function remotely (host) {
     delete options.identity;
   }
 
-  debug('Running "%s" on %s', remoteCommand || '(not given yet)', host);
+  remote('Running "%s" on %s', remoteCommand || '(not given yet)', host);
+  local('Running "%s"', sshCommand);
 
   return exec(sshCommand, options, callback);
 }

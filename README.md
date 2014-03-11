@@ -73,6 +73,12 @@ You can specify a custom identity file:
 remotely('user@host', 'pwd', { identity: '/home/azer/ssh-foo/.id_rsa' }).pipe(process.stdout)
 ```
 
+## Debugging
+
+```bash
+DEBUG=remotely:* node yourscript.js
+```
+
 ## Testing
 
 Test module requires a hostname as third parameter.
