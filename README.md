@@ -34,7 +34,7 @@ remotely('user@hostname', 'echo $HOME', function (error, stdout, stderr) {
 
 ### Child Process options
 
-Remotely has a very similar interface to `child_process.exec`. You can pass child options as third parameter:
+Remotely has a similar interface to `child_process.exec`. You can pass child options as third parameter:
 
 ```js
 remotely('user@hostname', 'echo $HOME', { timeout: 2000 }).stdout.pipe(process.stdout)
