@@ -1,6 +1,6 @@
 {
   "name": "remotely",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Run given command remotely via SSH",
   "main": "index.js",
   "keywords": [
