@@ -1,3 +1,4 @@
+var debug = require("debug")('remotely');
 var format = require("format-text");
 var exec = require("child_process").exec;
 
@@ -30,6 +31,8 @@ function remotely (host) {
     delete options.options;
     delete options.identity;
   }
+
+  debug('Running "%s" on %s', remoteCommand || '(not given yet)', host);
 
   return exec(sshCommand, options, callback);
 }
