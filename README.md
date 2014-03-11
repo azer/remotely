@@ -37,7 +37,7 @@ remotely('user@hostname', 'echo $HOME', function (error, stdout, stderr) {
 You can pipe commands to call:
 
 ```js
-remotely = require('remotely')('azer.io', { timeout: 9999 })
+remotely = require('remotely')('azer.io')
 
 remotely.stdout.pipe(process.stdout)
 
