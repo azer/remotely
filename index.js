@@ -1,12 +1,12 @@
 var debug = require("debug");
 var remote = debug('remotely:remote');
 var local = debug('remotely:local');
-
+var concat = require("concat-stream");
 var format = require("format-text");
-var exec = require("child_process").exec;
+var spawn = require("child_process").spawn;
 
 module.exports = remotely;
-module.exports.generateCommand = generateCommand;
+module.exports.childProcessParams = childProcessParams;
 
 function remotely (host) {
   var options;
@@ -27,51 +27,56 @@ function remotely (host) {
     options = arguments[1];
   }
 
-  var sshCommand = generateCommand(host, options, remoteCommand);
-
   // Remove SSH specific fields from options object before passing it to child_process.exec
   if (options) {
     delete options.options;
     delete options.identity;
   }
 
-  remote('Running "%s" on %s', remoteCommand || '(not given yet)', host);
-  local('Running "%s"', sshCommand);
+  var command = childProcessParams(host, options, remoteCommand);
 
-  return exec(sshCommand, options, callback);
+  remote('Running "%s" on %s', remoteCommand || '(empty)', host);
+  local('Running "ssh %s"', command.join(' '));
+
+  var ps = spawn('ssh', command, options, callback);
+  var stdout, stderr;
+
+  if (callback) {
+    ps.on('error', callback);
+
+    ps.on('close', function () {
+      callback(undefined, stdout, stderr);
+    });
+
+    ps.stdout.pipe(concat(function (stdoutbf) {
+      stdout = stdoutbf.toString();
+    }));
+
+    ps.stderr.pipe(concat(function (stderrbf) {
+      stderr = stderrbf.toString();
+    }));
+  }
+
+  return ps;
 }
 
-function generateCommand (host, options, remoteCommand) {
+function childProcessParams (host, options, remoteCommand) {
+  var result = [host];
   var params = '';
-  var sshOptions;
   var key;
 
-  if (options) {
-    if (options.options) {
-      sshOptions = '';
+  if (options && options.identity) {
+    result.push('-i');
+    result.push(options.identity);
+  }
 
-      for (key in options.options) {
-        sshOptions += ' -o ' + key + '=' + options.options[key];
-      }
-    }
-
-    if (options.identity) {
-      params += ' -i ' + options.identity;
+  if (options && options.options) {
+    for (key in options.options) {
+      result.push('-o', key + '=' + options.options[key]);
     }
   }
 
-  if (remoteCommand) {
-    remoteCommand = remoteCommand
-      .replace(/"/g, "\\\"")
-      .replace(/\$/g, "\\$");
+  if (remoteCommand != undefined) result.push(remoteCommand);
 
-    remoteCommand = ' "' + remoteCommand + '"';
-  }
-
-  return format('ssh {host}{params}{options}{command}', {
-    host: host,
-    options: sshOptions || '',
-    params: params || '',
-    command: remoteCommand || ''
-  });
+  return result;
 }
